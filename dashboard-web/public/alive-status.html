@@ -456,7 +456,8 @@ tbody tr:nth-child(even) {
   </div>
 <script>
   const BLUE_ZONE_COL_INDEX = 10;
-  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/Sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
+  // Fetches data from backend server.js (/sheet endpoint), which caches Google Sheets API data
+  const googleSheetJsonUrl = '/sheet'; // or your backend server URL
 
   function showErrorNote(error) {
     const note = document.getElementById('error-note');
@@ -680,7 +681,7 @@ function updateTable(data) {
   }
 
   fetchDataAndUpdate();
-  setInterval(fetchDataAndUpdate, 1000);
+  setInterval(fetchDataAndUpdate, 5000);
 </script>
 <style>
 #dashboard-link-btn {
@@ -785,7 +786,7 @@ function pollSheetControl() {
 }
 window.addEventListener('DOMContentLoaded', function() {
   pollSheetControl();
-  setInterval(pollSheetControl, 3000);
+  setInterval(pollSheetControl, 5000); // every 5 seconds
 });
 </script>
 </body>
