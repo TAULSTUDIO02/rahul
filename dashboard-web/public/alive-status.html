@@ -456,7 +456,7 @@ tbody tr:nth-child(even) {
   </div>
 <script>
   const BLUE_ZONE_COL_INDEX = 10;
-  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
+  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/Sheet7?alt=json&key=';
 
   function showErrorNote(error) {
     const note = document.getElementById('error-note');
@@ -672,6 +672,7 @@ function updateTable(data) {
         }));
         updateTable(parsedData);
         document.getElementById('error-note').style.display = 'none';
+        pollSheetControl(); // Immediately check control after data update
       })
       .catch(error => {
         showErrorNote(error);
@@ -766,7 +767,7 @@ function slideOutTable() {
   setTimeout(() => { container.style.display = 'none'; }, 500);
 }
 // Slide in/out based on Google Sheet cell L2 (Sheet7)
-const controlUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
+const controlUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/Sheet7!L2?alt=json&key=';
 let lastControl = null;
 function pollSheetControl() {
   fetch(controlUrl + '&t=' + Date.now())
@@ -790,4 +791,3 @@ window.addEventListener('DOMContentLoaded', function() {
 </script>
 </body>
 </html>
-
