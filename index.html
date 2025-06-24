@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SPX Style Dashboard</title>
+    <link rel="stylesheet" href="assets/styles.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+      thead th {
+        padding: 6px 0 5px 0;
+        border: none;
+        text-align: center;
+        vertical-align: middle;
+        background: linear-gradient(90deg, #851616, #ff4e50, #851616, #ff4e50);
+        color: #fff !important;
+        background-size: 300% 300%;
+        animation: header-gradient-move 6s ease-in-out infinite;
+        font-weight: 600;
+        font-family: 'Poppins', Arial, 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+        letter-spacing: 0px;
+        font-size: 12px;
+      }
+      thead th:first-child {
+        border-top-left-radius: 5px;
+      }
+      thead th:last-child {
+        border-top-right-radius: 5px;
+      }
+      thead th.team-heading {
+        text-align: left;
+        padding-left: 12px;
+      }
+      tbody tr {
+        height: 30px;
+        background: #151515;
+        border-radius: 0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        transition: transform 0.5s cubic-bezier(0.4, 0.5, 0.2, 1), box-shadow 0.3s;
+        will-change: transform;
+        color: #000000;
+        font-family: 'Poppins', Arial, 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+        letter-spacing: 0.5px;
+      }
+      tbody tr.moving {
+        z-index: 2;
+        box-shadow: 0 8px 32px 4px #11182799;
+      }
+      /* SMOOTH BLUE FLOW FOR ENTIRE ROW WHEN .blue-zone-animated IS PRESENT */
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">Taul Studio</div>
+        <nav>
+            <a href="dashboard.html"><span class="material-icons">dashboard</span>Dashboard</a>
+            <a href="elements.html"><span class="material-icons">view_module</span>Elements</a>
+            <a href="broadcasting.html"><span class="material-icons">live_tv</span>Broadcasting</a>
+            <a href="settings.html"><span class="material-icons">settings</span>Settings</a>
+        </nav>
+    </aside>
+    <div class="main-content">
+        <header class="topbar">
+            <span class="page-title">Dashboard</span>
+            <span class="user-settings"><span class="material-icons">account_circle</span></span>
+        </header>
+        <main>
+            <div class="dashboard-cards">
+                <div class="card">
+                    <span class="material-icons card-icon">sports_esports</span>
+                    <div class="card-title">Scoreboard</div>
+                    <a href="scoreboard.html" class="card-link">Manage</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">layers</span>
+                    <div class="card-title">Overlays</div>
+                    <a href="overlays.html" class="card-link">Manage</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">groups</span>
+                    <div class="card-title">Teams</div>
+                    <a href="teams.html" class="card-link">Manage</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">person</span>
+                    <div class="card-title">Players</div>
+                    <a href="players.html" class="card-link">Manage</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">settings</span>
+                    <div class="card-title">Settings</div>
+                    <a href="settings.html" class="card-link">Configure</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">favorite</span>
+                    <div class="card-title">Alive Status</div>
+                    <a href="alive-status.html" class="card-link">View</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">live_tv</span>
+                    <div class="card-title">Broadcast</div>
+                    <a href="broadcast.html" class="card-link">Open</a>
+                </div>
+                <div class="card">
+                    <span class="material-icons card-icon">tune</span>
+                    <div class="card-title">Alive Status Dashboard</div>
+                    <a href="alive-status-dashboard.html" class="card-link">Configure</a>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="js/main.js"></script>
+</body>
+</html>
