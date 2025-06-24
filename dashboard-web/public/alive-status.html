@@ -456,11 +456,14 @@ tbody tr:nth-child(even) {
   </div>
 <script>
   const BLUE_ZONE_COL_INDEX = 10;
-  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1Cwt0M55a3QhLQwmWgxZSgb02n-ukNO7DEMKebTFSDeM/values/sheet7?alt=json&key=AIzaSyDZOkJIOvXElwq1f5WBYlaR0g4-Pk_vU14';
+  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/Sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
 
   function showErrorNote(error) {
     const note = document.getElementById('error-note');
     note.style.display = 'block';
+    // Hide the table on error
+    const container = document.querySelector('.ranking-container');
+    if (container) container.style.display = 'none';
     if (error && error.message) {
       note.innerHTML = `<strong>Error:</strong> ${error.message}<br>Check your internet connection, API key, or spreadsheet permissions.`;
     }
@@ -747,60 +750,44 @@ function updateTable(data) {
 }
 </style>
 <script>
-const SHEET_URL = 'https://sheets.googleapis.com/v4/spreadsheets/1Cwt0M55a3QhLQwmWgxZSgb02n-ukNO7DEMKebTFSDeM/values/ff!AY18?alt=json&key=AIzaSyDZOkJIOvXElwq1f5WBYlaR0g4-Pk_vU14';
-let lastShow = null;
-
-function animateAliveStatusIn() {
+// Animation functions for table
+function slideInTable() {
   const container = document.querySelector('.ranking-container');
   if (!container) return;
-  if (!container.classList.contains('hidden')) return; // Prevent repeated in animation
+  container.style.display = '';
   container.classList.remove('slide-out');
   container.classList.add('slide-in');
-  container.classList.remove('hidden');
-  container.style.display = '';
 }
-function animateAliveStatusOut() {
+function slideOutTable() {
   const container = document.querySelector('.ranking-container');
   if (!container) return;
-  if (container.classList.contains('hidden')) return; // Prevent repeated out animation
   container.classList.remove('slide-in');
   container.classList.add('slide-out');
-  setTimeout(() => {
-    container.classList.add('hidden');
-    container.style.display = 'none';
-  }, 500);
+  setTimeout(() => { container.style.display = 'none'; }, 500);
 }
-
-function fetchSheetAndAnimate() {
-  fetch(SHEET_URL + '&t=' + Date.now())
+// Slide in/out based on Google Sheet cell L2 (Sheet7)
+const controlUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/Sheet7!L2?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
+let lastControl = null;
+function pollSheetControl() {
+  fetch(controlUrl + '&t=' + Date.now())
     .then(res => res.json())
     .then(data => {
-      // AY18 is a single cell, so data.values[0][0] is the value
       const value = data.values && data.values[0] && data.values[0][0];
-      const show = value && (value.toString().toUpperCase() === 'TRUE' || value === '✔' || value === '✓');
-      if (show && lastShow !== true) {
-        animateAliveStatusIn();
-      } else if (!show && lastShow === true) {
-        animateAliveStatusOut();
+      if (value && value.toString().toUpperCase() === 'TRUE') {
+        if (lastControl !== true) slideInTable();
+        lastControl = true;
+      } else if (value && value.toString().toUpperCase() === 'FALSE') {
+        if (lastControl !== false) slideOutTable();
+        lastControl = false;
       }
-      lastShow = show;
     })
-    .catch(() => {
-      // On error, do nothing (keep last state)
-    });
+    .catch(() => {});
 }
-
-document.addEventListener('DOMContentLoaded', function() {
-  fetchSheetAndAnimate();
-  setInterval(fetchSheetAndAnimate, 1000);
+window.addEventListener('DOMContentLoaded', function() {
+  pollSheetControl();
+  setInterval(pollSheetControl, 1000);
 });
 </script>
 </body>
 </html>
-
-
-
-
-
-
 
