@@ -1,38 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-    // Fetch dashboard settings from a remote JSON file (dashboard-settings.json)
-    fetch('dashboard-settings.json')
-      .then(response => response.json())
-      .then(settings => {
-        if (settings.rowOddColor)
-          document.documentElement.style.setProperty('--row-bg-odd', settings.rowOddColor);
-        if (settings.rowEvenColor)
-          document.documentElement.style.setProperty('--row-bg-even', settings.rowEvenColor);
-        if (settings.colTextColorRank)
-          document.documentElement.style.setProperty('--col-text-color-rank', settings.colTextColorRank);
-        if (settings.colTextColorTeam)
-          document.documentElement.style.setProperty('--col-text-color-team', settings.colTextColorTeam);
-        if (settings.colTextColorFin)
-          document.documentElement.style.setProperty('--col-text-color-fin', settings.colTextColorFin);
-        if (settings.colTextColorStatus)
-          document.documentElement.style.setProperty('--col-text-color-status', settings.colTextColorStatus);
-        if (settings.headerGradientStart)
-          document.documentElement.style.setProperty('--alive-header-bg', settings.headerGradientStart);
-        if (settings.headerGradientEnd)
-          document.documentElement.style.setProperty('--alive-header-bg-end', settings.headerGradientEnd);
-        if (settings.legendAliveColor)
-          document.documentElement.style.setProperty('--legend-alive-color', settings.legendAliveColor);
-        if (settings.legendElimColor)
-          document.documentElement.style.setProperty('--legend-elim-color', settings.legendElimColor);
-        if (settings.legendAloneColor)
-          document.documentElement.style.setProperty('--legend-alone-color', settings.legendAloneColor);
-      })
-      .catch(err => {
-        console.warn('Could not load dashboard-settings.json:', err);
-      });
-  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <!-- Esports Font: Poppins -->
@@ -42,6 +10,19 @@
   <title>Live Ranking Table</title>
   <link rel="stylesheet" href="assets/alive-status.css">
   <style>
+    :root {
+      --row-bg-odd: #151515;
+      --row-bg-even: #9e9cb3;
+      --col-text-color-rank: #fff;
+      --col-text-color-team: #fff;
+      --col-text-color-fin: #f80909;
+      --col-text-color-status: #fff;
+      --alive-header-bg: #851616;
+      --alive-header-bg-end: #ff4e50;
+      --legend-alive-color: #16a34a;
+      --legend-elim-color: #dc2626;
+      --legend-alone-color: #2600ff;
+    }
     html, body {
       width: 1920px;
       height: 1080px;
@@ -417,34 +398,7 @@ tbody tr:nth-child(even) {
   text-align: left;
 }
   </style>
-  <script>
-    // Apply dashboard settings from localStorage to alive-status.html
-    (function applyDashboardSettings() {
-      const settings = JSON.parse(localStorage.getItem('aliveStatusDashboardSettings') || '{}');
-      if (settings.rowOddColor)
-        document.documentElement.style.setProperty('--row-bg-odd', settings.rowOddColor);
-      if (settings.rowEvenColor)
-        document.documentElement.style.setProperty('--row-bg-even', settings.rowEvenColor);
-      if (settings.colTextColorRank)
-        document.documentElement.style.setProperty('--col-text-color-rank', settings.colTextColorRank);
-      if (settings.colTextColorTeam)
-        document.documentElement.style.setProperty('--col-text-color-team', settings.colTextColorTeam);
-      if (settings.colTextColorFin)
-        document.documentElement.style.setProperty('--col-text-color-fin', settings.colTextColorFin);
-      if (settings.colTextColorStatus)
-        document.documentElement.style.setProperty('--col-text-color-status', settings.colTextColorStatus);
-      if (settings.headerGradientStart)
-        document.documentElement.style.setProperty('--alive-header-bg', settings.headerGradientStart);
-      if (settings.headerGradientEnd)
-        document.documentElement.style.setProperty('--alive-header-bg-end', settings.headerGradientEnd);
-      if (settings.legendAliveColor)
-        document.documentElement.style.setProperty('--legend-alive-color', settings.legendAliveColor);
-      if (settings.legendElimColor)
-        document.documentElement.style.setProperty('--legend-elim-color', settings.legendElimColor);
-      if (settings.legendAloneColor)
-        document.documentElement.style.setProperty('--legend-alone-color', settings.legendAloneColor);
-    })();
-  </script>
+  <!-- ...existing scripts... -->
 </head>
 <body>
   <div id="error-note"
