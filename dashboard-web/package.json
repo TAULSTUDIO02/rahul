@@ -1,0 +1,30 @@
+{
+  "name": "dashboard-web",
+  "version": "1.0.0",
+  "description": "A dashboard website for managing HTML webpages and displaying a scoreboard.",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "live-server public",
+    "build": "echo 'Build step not defined'",
+    "test": "echo 'Test step not defined'"
+  },
+  "keywords": [
+    "dashboard",
+    "scoreboard",
+    "web"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "live-server": "^1.2.1"
+  },
+  "devDependencies": {},
+  "homepage": "https://yourhomepage.com",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/dashboard-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/dashboard-web/issues"
+  }
+}
