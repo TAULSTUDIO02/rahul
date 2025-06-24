@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Scoreboard Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        :root {
+            --primary: #a259ff;
+            --secondary: #8b5cf6;
+            --sidebar-bg: #181c2f;
+            --main-bg: #23243a;
+            --card-bg: #23243a;
+            --button-bg: #7c3aed;
+            --button-hover: #a259ff;
+            --button-text: #fff;
+            --button-alt-bg: #23243a;
+            --button-alt-text: #a259ff;
+            --text-main: #fff;
+            --text-secondary: #b0b8d1;
+        }
+        * { box-sizing: border-box; }
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+            background: var(--main-bg);
+            font-family: 'Poppins', Arial, 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+        .dashboard-container {
+            display: flex;
+            height: 100vh;
+            width: 100vw;
+        }
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            padding-top: 40px;
+            box-shadow: 4px 0 24px #0004;
+            min-width: 180px;
+            height: 100vh;
+        }
+        .sidebar-logo {
+            color: var(--primary);
+            font-size: 2em;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-left: 36px;
+            margin-bottom: 40px;
+        }
+        .sidebar nav {
+            width: 100%;
+        }
+        .sidebar nav a {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 14px 36px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 1.1em;
+            margin-bottom: 6px;
+            border-radius: 8px 0 0 8px;
+            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+            position: relative;
+        }
+        .sidebar nav a.active,
+        .sidebar nav a:hover {
+            background: #23243a;
+            color: var(--primary);
+            box-shadow: 0 2px 12px #a259ff22;
+        }
+        .sidebar nav a[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: 110%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #23243a;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 0.95em;
+            box-shadow: 0 2px 8px #0005;
+            z-index: 100;
+        }
+        .sidebar .material-icons {
+            font-size: 1.3em;
+        }
+        /* Main dashboard area */
+        .dashboard-main {
+            flex: 1;
+            height: 100vh;
+            width: calc(100vw - 260px);
+            display: flex;
+            flex-direction: column;
+            background: var(--main-bg);
+            padding: 0;
+            overflow: hidden;
+        }
+        .dashboard-title {
+            font-size: 2em;
+            font-weight: 700;
+            margin: 40px 0 32px 60px;
+            letter-spacing: 1px;
+            color: var(--primary);
+        }
+        .main-content-flex {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            height: calc(100vh - 120px);
+            padding: 0 60px 0 60px;
+            box-sizing: border-box;
+            gap: 40px;
+        }
+        .controls-panel {
+            flex: 1 1 480px;
+            max-width: 520px;
+            min-width: 340px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .controls-section {
+            background: var(--card-bg);
+            padding: 18px 24px 14px 24px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px #0002;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            width: 100%;
+            transition: box-shadow 0.2s, transform 0.2s, border 0.2s;
+            border: 2px solid transparent;
+            position: relative;
+        }
+        .controls-section:hover {
+            box-shadow: 0 4px 24px #a259ff33;
+            transform: translateY(-2px) scale(1.01);
+            border: 2px solid #a259ff;
+        }
+        .controls-section:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 16px;
+            pointer-events: none;
+            box-shadow: 0 0 24px 4px #a259ff33;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .controls-section:hover:before {
+            opacity: 1;
+        }
+        .controls-section label {
+            font-size: 1em;
+            color: var(--text-secondary);
+            margin-right: 8px;
+            position: relative;
+        }
+        .controls-section label[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            left: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #23243a;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 6px;
+            white-space: nowrap;
+            font-size: 0.95em;
+            box-shadow: 0 2px 8px #0005;
+            z-index: 100;
+            margin-left: 8px;
+        }
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+            flex-wrap: wrap;
+        }
+        .controls-section input[type="color"] {
+            border: none;
+            width: 24px;
+            height: 24px;
+            background: none;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        .controls-section input[type="color"]:hover {
+            box-shadow: 0 0 0 2px var(--primary);
+        }
+        .controls-section input[type="number"] {
+            width: 48px;
+            padding: 2px 8px;
+            border-radius: 5px;
+            border: 1px solid #333;
+            background: #181c2f;
+            color: var(--text-main);
+            font-size: 1em;
+            transition: border 0.2s, box-shadow 0.2s;
+        }
+        .controls-section input[type="number"]:focus {
+            border: 1.5px solid var(--primary);
+            box-shadow: 0 0 0 2px #a259ff33;
+            outline: none;
+        }
+        .controls-section button {
+            background: var(--button-bg);
+            color: var(--button-text);
+            border: none;
+            border-radius: 6px;
+            padding: 7px 18px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px #0002;
+        }
+        .controls-section button:hover {
+            background: var(--button-hover);
+            color: var(--button-text);
+            box-shadow: 0 4px 16px #a259ff33;
+            transform: translateY(-2px) scale(1.03);
+        }
+        .controls-section button[style*="background:var(--secondary)"] {
+            background: var(--button-alt-bg) !important;
+            color: var(--button-alt-text) !important;
+            border: 1px solid var(--button-alt-text);
+        }
+        .controls-row.save-row {
+            justify-content: flex-end;
+            margin-top: 10px;
+            display: flex;
+        }
+        /* Loading Spinner */
+        .spinner-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(35,36,58,0.7);
+            z-index: 99999;
+            align-items: center;
+            justify-content: center;
+        }
+        .spinner {
+            border: 5px solid #eee2;
+            border-top: 5px solid var(--primary);
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg);}
+            100% { transform: rotate(360deg);}
+        }
+        /* Live Preview */
+        .preview-section {
+            flex: 1 1 700px;
+            margin: 0;
+            background: var(--card-bg);
+            padding: 32px 36px;
+            border-radius: 18px;
+            box-shadow: 0 4px 24px #0003;
+            max-width: 900px;
+            min-width: 420px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            height: fit-content;
+            transition: box-shadow 0.2s, transform 0.2s;
+        }
+        .preview-section:hover {
+            box-shadow: 0 8px 32px #a259ff33;
+            transform: translateY(-2px) scale(1.01);
+        }
+        .preview-title {
+            font-size: 1.2em;
+            color: var(--primary);
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+        /* Scoreboard Table Styles (Preview) */
+        .scoreboard-table {
+            width: 100%;
+            min-width: 420px;
+            border-collapse: separate;
+            border-spacing: 0 10px;
+            margin-top: 10px;
+            background: transparent;
+        }
+        .scoreboard-table th {
+            font-size: 1.1em;
+            padding: 14px 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            background: var(--primary);
+            color: #fff;
+            border-radius: 8px 8px 0 0;
+            transition: background 0.2s, color 0.2s;
+        }
+        .scoreboard-table td {
+            font-size: 1.1em;
+            text-align: center;
+            height: 54px;
+            padding: 0;
+            font-weight: 600;
+            vertical-align: middle;
+            background: var(--card-bg);
+            color: var(--text-main);
+            border-radius: 0 0 8px 8px;
+            transition: background 0.2s, color 0.2s;
+        }
+        .scoreboard-table td.team {
+            text-align: left;
+            padding-left: 24px;
+        }
+        /* Add this to your CSS for the card hover effect */
+        .card-hover {
+            background: #23243a;
+            border: 1.5px solid #a259ff44;
+            border-radius: 18px;
+            box-shadow: 0 2px 16px #a259ff11, 0 0 0 0 #a259ff;
+            padding: 36px 32px 28px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: 
+                box-shadow 0.3s cubic-bezier(.4,2,.6,1),
+                border-color 0.3s cubic-bezier(.4,2,.6,1),
+                transform 0.2s cubic-bezier(.4,2,.6,1);
+            margin: 24px auto;
+            max-width: 320px;
+            cursor: pointer;
+        }
+        .card-hover:hover {
+            box-shadow: 0 0 0 3px #a259ff, 0 8px 32px #a259ff33;
+            border-color: #a259ff;
+            transform: translateY(-4px) scale(1.03);
+        }
+        .card-hover .material-icons {
+            font-size: 2.2em;
+            color: #a259ff;
+            margin-bottom: 10px;
+        }
+        .card-hover .card-title {
+            color: #a259ff;
+            font-size: 1.3em;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+        .card-hover .card-btn {
+            background: #a259ff;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 32px;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px #a259ff22;
+            cursor: pointer;
+        }
+        .card-hover .card-btn:hover {
+            background: #8b5cf6;
+            box-shadow: 0 4px 16px #a259ff33;
+            transform: translateY(-2px) scale(1.04);
+        }
+        /* Add this to your CSS for a thin glowing line effect */
+        .glow-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #a259ff 0%, #8b5cf6 100%);
+            box-shadow: 0 0 8px 2px #a259ff66;
+            border-radius: 2px;
+            margin: 32px 0 24px 0;
+            transition: box-shadow 0.3s;
+        }
+        .glow-line:hover {
+            box-shadow: 0 0 16px 4px #a259ffcc;
+        }
+        @media (max-width: 1400px) {
+            .main-content-flex {
+                flex-direction: column;
+                gap: 24px;
+                padding: 0 24px;
+            }
+            .controls-panel, .preview-section {
+                max-width: 100%;
+                min-width: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-logo">Taul Studio</div>
+            <nav>
+                <a href="#" class="active" title="Scoreboard"><span class="material-icons">dashboard</span>Scoreboard</a>
+            </nav>
+        </aside>
+        <!-- Main dashboard area -->
+        <div class="dashboard-main">
+            <div class="dashboard-title">Scoreboard UI Controls</div>
+            <div class="glow-line"></div>
+            <div class="main-content-flex">
+
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <!-- Row Style Controls -->
+                    <div class="controls-section">
+                        <div style="font-size:1em;color:var(--primary);font-weight:600;margin-bottom:4px;">Row Style</div>
+                        <div class="controls-row">
+                            <label title="Set the height of each row">Height:</label>
+                            <input type="number" id="row-height" min="20" max="100" value="30">
+                            <label title="Set the vertical padding for each row">Padding:</label>
+                            <input type="number" id="row-padding" min="0" max="40" value="0">
+                            <button onclick="applyRowStyles()" title="Apply row style changes">Apply</button>
+                            <button onclick="resetRowStyles()" style="background:var(--secondary);color:var(--primary);margin-left:6px;" title="Reset row styles">Reset</button>
+                        </div>
+                    </div>
+                    <!-- Header Style Controls -->
+                    <div class="controls-section">
+                        <div style="font-size:1em;color:var(--primary);font-weight:600;margin-bottom:4px;">Header Style</div>
+                        <div class="controls-row">
+                            <label title="Header background color">BG:</label>
+                            <input type="color" id="header-bg" value="#a259ff">
+                        </div>
+                        <div class="controls-row">
+                            <label title="Header text color">Text Color:</label>
+                            <input type="color" id="header-text" value="#fff">
+                        </div>
+                        <div class="controls-row">
+                            <label title="Header font size">Text Size:</label>
+                            <input type="number" id="header-fontsize" min="10" max="32" value="14" style="width:48px;">
+                        </div>
+                        <div class="controls-row">
+                            <button onclick="changeHeaderColor()" title="Apply header style changes">Apply</button>
+                            <button onclick="resetHeaderColor()" style="background:var(--secondary);color:var(--primary);margin-left:6px;" title="Reset header styles">Reset</button>
+                        </div>
+                    </div>
+                    <!-- Column Style Controls -->
+                    <div class="controls-section">
+                        <div style="font-size:1em;color:var(--primary);font-weight:600;margin-bottom:4px;">Column Style</div>
+                        <div class="controls-row">
+                            <label title="Column number (1-6)">#:</label>
+                            <input type="number" id="col-index" min="1" max="6" value="1">
+                        </div>
+                        <div class="controls-row">
+                            <label title="Column background color">BG:</label>
+                            <input type="color" id="col-bg" value="#a259ff">
+                        </div>
+                        <div class="controls-row">
+                            <label title="Column text color">Text Color:</label>
+                            <input type="color" id="col-text" value="#fff">
+                        </div>
+                        <div class="controls-row">
+                            <label title="Column font size">Text Size:</label>
+                            <input type="number" id="col-fontsize" min="10" max="32" value="12" style="width:48px;">
+                        </div>
+                        <div class="controls-row">
+                            <button onclick="changeColColor()" title="Apply column style changes">Apply</button>
+                            <button onclick="resetColColor()" style="background:var(--secondary);color:var(--primary);margin-left:6px;" title="Reset column styles">Reset</button>
+                        </div>
+                    </div>
+                    <div class="controls-section" style="background:none;box-shadow:none;min-width:0;max-width:100%;">
+                        <div class="controls-row save-row">
+                            <button id="save-btn" style="background: var(--button-bg); color: #fff;" onclick="saveSettings()" title="Save all settings">Save</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- Live Preview Section -->
+                <div class="preview-section">
+                    <div class="preview-title">Live Scoreboard Preview</div>
+                    <table class="scoreboard-table" id="scoreboard-preview">
+                        <tr>
+                            <th>RANK</th>
+                            <th>TEAM NAME</th>
+                            <th>BOOYAH</th>
+                            <th>POS</th>
+                            <th>ELIMS</th>
+                            <th>TOTAL</th>
+                        </tr>
+                        <tr>
+                            <td>#1</td>
+                            <td class="team">TEAM ALPHA</td>
+                            <td>2</td>
+                            <td>18</td>
+                            <td>10</td>
+                            <td>40</td>
+                        </tr>
+                        <tr>
+                            <td>#2</td>
+                            <td class="team">TEAM BETA</td>
+                            <td>1</td>
+                            <td>15</td>
+                            <td>8</td>
+                            <td>32</td>
+                        </tr>
+                        <tr>
+                            <td>#3</td>
+                            <td class="team">TEAM GAMMA</td>
+                            <td>0</td>
+                            <td>12</td>
+                            <td>7</td>
+                            <td>19</td>
+                        </tr>
+                        <tr>
+                            <td>#4</td>
+                            <td class="team">TEAM DELTA</td>
+                            <td>0</td>
+                            <td>10</td>
+                            <td>5</td>
+                            <td>15</td>
+                        </tr>
+                        <tr>
+                            <td>#5</td>
+                            <td class="team">TEAM EPSILON</td>
+                            <td>0</td>
+                            <td>8</td>
+                            <td>3</td>
+                            <td>11</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Loading Spinner -->
+    <div class="spinner-overlay" id="spinner-overlay">
+        <div class="spinner"></div>
+    </div>
+    <div id="toast" style="position:fixed;bottom:32px;right:32px;z-index:9999;display:none;padding:14px 28px;background:var(--primary);color:#fff;border-radius:8px;font-weight:600;box-shadow:0 2px 12px #0006;">Settings saved!</div>
+    <script>
+        // Row style functions
+        function applyRowStyles() {
+            showSpinner();
+            setTimeout(() => {
+                const height = document.getElementById('row-height').value + 'px';
+                const padding = document.getElementById('row-padding').value + 'px';
+                // Only apply to table body rows (skip header row)
+                const table = document.getElementById('scoreboard-preview');
+                for (let i = 1; i < table.rows.length; i++) {
+                    table.rows[i].style.height = height;
+                    for (let cell of table.rows[i].cells) {
+                        // Remove fontSize change here
+                        cell.style.paddingTop = padding;
+                        cell.style.paddingBottom = padding;
+                    }
+                }
+                hideSpinner();
+            }, 600); // Simulate async
+        }
+        function resetRowStyles() {
+            showSpinner();
+            setTimeout(() => {
+                document.querySelectorAll('#scoreboard-preview tr').forEach(row => {
+                    row.style.height = '';
+                });
+                document.querySelectorAll('#scoreboard-preview td, #scoreboard-preview th').forEach(cell => {
+                    cell.style.paddingTop = '';
+                    cell.style.paddingBottom = '';
+                });
+                document.getElementById('row-height').value = 30;
+                document.getElementById('row-padding').value = 0;
+                hideSpinner();
+            }, 400);
+        }
+        // Header style functions
+        function changeHeaderColor() {
+            showSpinner();
+            setTimeout(() => {
+                const bg = document.getElementById('header-bg').value;
+                const text = document.getElementById('header-text').value;
+                const fontSize = document.getElementById('header-fontsize').value;
+                const table = document.getElementById('scoreboard-preview');
+                const headerRow = table.rows[0];
+                for (let cell of headerRow.cells) {
+                    cell.style.background = bg;
+                    cell.style.color = text;
+                    cell.style.fontSize = fontSize + 'px';
+                }
+                // Save to backend
+                fetch(window.location.origin + '/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        scoreboardHeaderBg: bg,
+                        scoreboardHeaderText: text,
+                        scoreboardHeaderFontSize: fontSize,
+                        scoreboardColIdx: document.getElementById('col-index').value,
+                        scoreboardColBg: document.getElementById('col-bg').value,
+                        scoreboardColText: document.getElementById('col-text').value,
+                        scoreboardColFontSize: document.getElementById('col-fontsize').value
+                    })
+                });
+                hideSpinner();
+            }, 400);
+        }
+        function resetHeaderColor() {
+            showSpinner();
+            setTimeout(() => {
+                const table = document.getElementById('scoreboard-preview');
+                const headerRow = table.rows[0];
+                for (let cell of headerRow.cells) {
+                    cell.style.background = '';
+                    cell.style.color = '';
+                    cell.style.fontSize = '';
+                }
+                document.getElementById('header-bg').value = "#a259ff";
+                document.getElementById('header-text').value = "#fff";
+                document.getElementById('header-fontsize').value = 14;
+                hideSpinner();
+            }, 400);
+        }
+        // Column style functions
+        function changeColColor() {
+            showSpinner();
+            setTimeout(() => {
+                const colIdx = parseInt(document.getElementById('col-index').value, 10) - 1;
+                const bg = document.getElementById('col-bg').value;
+                const text = document.getElementById('col-text').value;
+                const fontSize = document.getElementById('col-fontsize').value;
+                const table = document.getElementById('scoreboard-preview');
+                for (let i = 0; i < table.rows.length; i++) {
+                    const cell = table.rows[i].cells[colIdx];
+                    if (cell) {
+                        cell.style.background = bg;
+                        cell.style.color = text;
+                        cell.style.fontSize = fontSize + 'px';
+                    }
+                }
+                // Save to backend
+                fetch(window.location.origin + '/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        scoreboardHeaderBg: document.getElementById('header-bg').value,
+                        scoreboardHeaderText: document.getElementById('header-text').value,
+                        scoreboardHeaderFontSize: document.getElementById('header-fontsize').value,
+                        scoreboardColIdx: colIdx + 1,
+                        scoreboardColBg: bg,
+                        scoreboardColText: text,
+                        scoreboardColFontSize: fontSize
+                    })
+                });
+                hideSpinner();
+            }, 400);
+        }
+        function resetColColor() {
+            showSpinner();
+            setTimeout(() => {
+                const colIdx = parseInt(document.getElementById('col-index').value, 10) - 1;
+                const table = document.getElementById('scoreboard-preview');
+                for (let i = 0; i < table.rows.length; i++) {
+                    const cell = table.rows[i].cells[colIdx];
+                    if (cell) {
+                        cell.style.background = '';
+                        cell.style.color = '';
+                        cell.style.fontSize = '';
+                    }
+                }
+                document.getElementById('col-bg').value = "#a259ff";
+                document.getElementById('col-text').value = "#fff";
+                document.getElementById('col-fontsize').value = 12;
+                hideSpinner();
+            }, 400);
+        }
+        // Toast message functions
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            toast.textContent = msg;
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+        // Spinner functions
+        function showSpinner() {
+            document.getElementById('spinner-overlay').style.display = 'flex';
+        }
+        function hideSpinner() {
+            document.getElementById('spinner-overlay').style.display = 'none';
+        }
+        // Save settings (example)
+        function saveSettings() {
+            showSpinner();
+            setTimeout(() => {
+                // Save settings to backend
+                fetch(window.location.origin + '/settings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        scoreboardHeaderBg: document.getElementById('header-bg').value,
+                        scoreboardHeaderText: document.getElementById('header-text').value,
+                        scoreboardHeaderFontSize: document.getElementById('header-fontsize').value,
+                        scoreboardColIdx: document.getElementById('col-index').value,
+                        scoreboardColBg: document.getElementById('col-bg').value,
+                        scoreboardColText: document.getElementById('col-text').value,
+                        scoreboardColFontSize: document.getElementById('col-fontsize').value
+                    })
+                });
+                hideSpinner();
+                showToast('Settings saved!');
+            }, 800);
+        }
+    </script>
+</body>
+</html>

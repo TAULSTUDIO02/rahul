@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Overlay Controller</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Poppins', Arial, sans-serif;
+            display: flex;
+            height: 100vh;
+            background-color: #0f172a;
+            color: #fff;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1e293b;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .sidebar-logo {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #a855f7;
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: white;
+            font-size: 1.2em;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar a.active {
+            background-color: #4f46e5;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .control-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #1e293b;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .control-item span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2em;
+        }
+
+        .control-item .material-icons {
+            font-size: 1.5em;
+            color: #a855f7;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #4f46e5;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <aside class="sidebar">
+        <div class="sidebar-logo">Taul Studio</div>
+        <a href="broadcasting.html" class="active">
+            <span class="material-icons">live_tv</span>Broadcasting
+        </a>
+    </aside>
+    <div class="main-content">
+        <h1>Overlay Controller</h1>
+        <div class="controls">
+            <div class="control-item">
+                <span><span class="material-icons">favorite</span>Alive Status</span>
+                <label class="switch">
+                    <input type="checkbox" id="aliveStatus" onchange="toggleIframe('aliveStatus')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-item">
+                <span><span class="material-icons">score</span>Scoreboard</span>
+                <label class="switch">
+                    <input type="checkbox" id="scoreboard" onchange="toggleIframe('scoreboard')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="control-item">
+                <span><span class="material-icons">layers</span>Elimination</span>
+                <label class="switch">
+                    <input type="checkbox" id="elimination" onchange="toggleIframe('elimination')">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleIframe(iframeId) {
+            const checkbox = document.getElementById(iframeId);
+            const newState = checkbox.checked;
+            localStorage.setItem(iframeId, newState);
+            console.log(`Saved ${iframeId} state to localStorage:`, newState);
+
+            if (window.opener) {
+                window.opener.postMessage({ type: 'toggle-iframe', id: iframeId }, '*');
+                console.log(`Message sent to toggle ${iframeId}`);
+            } else {
+                console.warn('No opener window found. Using localStorage as fallback.');
+            }
+        }
+
+        // Initialize switch states based on localStorage
+        document.addEventListener('DOMContentLoaded', () => {
+            ['aliveStatus', 'scoreboard', 'elimination'].forEach(iframeId => {
+                const checkbox = document.getElementById(iframeId);
+                const state = localStorage.getItem(iframeId) === 'true';
+                checkbox.checked = state;
+            });
+        });
+    </script>
+</body>
+</html>

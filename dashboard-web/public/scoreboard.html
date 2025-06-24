@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Match Standings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700&display=swap" rel="stylesheet">
+    <style>
+        html, body {
+            width: 1920px;
+            height: 1080px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+        body {
+            background: #791fff00;
+            font-family: 'Oswald', Arial, sans-serif;
+            color: #ffffff00;
+        }
+        .main-wrap {
+            width: 1920px;
+            height: 1080px;
+            position: relative;
+            overflow: hidden;
+        }
+        .scoreboard-header .subtitle {
+            color: #ffd600;
+            font-size: 3em;
+            letter-spacing: 2px;
+            font-weight: 700;
+            position: absolute;
+            top: 180px;
+            left: 980px;
+        }
+        .scoreboard-header .title {
+            font-size: 6em;
+            font-weight: 700;
+            margin: 0.2em 0 0.5em 0;
+            letter-spacing: 2px;
+            position: absolute;
+            top: 220px;
+            left: 970px;
+            text-transform: uppercase;
+        }
+        .scoreboard-main {
+            position: absolute;
+            top: 420px;
+            left: 110px;
+            display: flex;
+            gap: 100px;
+            z-index: 2;
+        }
+        .scoreboard-col {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+            width: 800px;
+        }
+        .scoreboard-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0 14px;
+        }
+        .scoreboard-table th {
+            background: #2d006b;
+            color: #ffd600;
+            font-size: 1.3em;
+            padding: 15px 0;
+            letter-spacing: 1px;
+            border-radius: 0px 0px 0 0;
+            text-transform: uppercase;
+        }
+        .scoreboard-table td {
+            background: #1a0040;
+            font-size: 1.25em;
+            text-align: center;
+            height: 70px;
+            padding: 0;
+            color: #fff;
+            font-weight: 700;
+            vertical-align: middle;
+        }
+        .scoreboard-table td.booyah,
+        .scoreboard-table td.total {
+            background: #ffd600;
+            color: #2d006b;
+            font-weight: 900;
+        }
+        .scoreboard-table td.team {
+            text-align: left;
+            padding-left: 32px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .scoreboard-table th:nth-child(2),
+        .scoreboard-table td.team {
+            width: 270px;
+            min-width: 300px;
+            max-width: 400px;
+        }
+        .scoreboard-table th:nth-child(6),
+        .scoreboard-table td.total {
+            width: 120px;
+            min-width: 100px;
+            max-width: 180px;
+        }
+        .scoreboard-table td.booyah {
+            border-radius: 0 0 0 0;
+            background: #ffd600;
+            color: #2d006b;
+            font-weight: 900;
+            height: fit-content;
+        }
+        .scoreboard-table td.total {
+            background: #ffd600;
+            border-radius: 0 0 0 0;
+            color: #2d006b;
+            font-weight: 900;
+        }
+        .scoreboard-table td.rank {
+            background: #fff;
+            color: #2d006b;
+            border-radius: 0 0 0 0;
+            font-weight: 900;
+        }
+        .team-logo {
+            width: 28px;
+            height: 28px;
+            background: #fff;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .scoreboard-table th:nth-child(4),
+        .scoreboard-table td:nth-child(4) {
+            padding-left: 10px;
+            padding-right: 0px;
+        }
+        .scoreboard-table th:nth-child(3),
+        .scoreboard-table td.booyah {
+            position: static;
+            left: 0;
+            padding-left: 0;
+            padding-right: 0;
+            height: 70px;
+            box-sizing: border-box;
+            vertical-align: middle;
+            border-radius: 0;
+            width: 80px;
+            min-width: 60px;
+            max-width: 120px;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-wrap">
+        <!-- Header -->
+        <div class="scoreboard-header">
+            <div class="subtitle" id="header-subtitle">GRAND FINALS</div>
+            <div class="title" id="header-title">OVERALL STANDINGS</div>
+        </div>
+        <!-- Scoreboard tables -->
+        <div class="scoreboard-main">
+            <div class="scoreboard-col">
+                <table class="scoreboard-table" id="scoreboard-preview">
+                    <tr>
+                        <th>RANK</th>
+                        <th>TEAM NAME</th>
+                        <th>BOOYAH</th>
+                        <th>POS</th>
+                        <th>ELIMS</th>
+                        <th>TOTAL</th>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="scoreboard-col">
+                <table class="scoreboard-table">
+                    <tr>
+                        <th>RANK</th>
+                        <th>TEAM NAME</th>
+                        <th>BOOYAH</th>
+                        <th>POS</th>
+                        <th>ELIMS</th>
+                        <th>TOTAL</th>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                    <tr>
+                        <td class="rank">#11</td>
+                        <td class="team"><span class="team-logo"></span>TEAM NAME</td>
+                        <td class="booyah">0</td>
+                        <td>00</td>
+                        <td>00</td>
+                        <td class="total">000</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+<!-- You can now access or update the header and subtitle separately using their IDs:
+     document.getElementById('header-title').textContent
+     document.getElementById('header-subtitle').textContent
+-->
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="transparent" content="true">
+    <meta name="webkit-transparent" content="true">
+    <title>Broadcast</title>
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background: transparent !important;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 1920px;
+            height: 1080px;
+            border: none;
+            background: transparent !important;
+            z-index: 999;
+        }
+    </style>
+</head>
+<body>
+    <iframe id="aliveStatus" src="alive-status.html" class="overlay" allowtransparency="true" style="display: block;"></iframe>
+    <iframe id="scoreboard" src="scoreboard.html" class="overlay" allowtransparency="true" style="display: block;"></iframe>
+    <iframe id="elimination" src="elimination.html" class="overlay" allowtransparency="true" style="display: block;"></iframe>
+
+    <script>
+        console.log('Broadcast page loaded');
+        // All iframes are always visible for testing
+        document.querySelectorAll('iframe').forEach(iframe => {
+            iframe.style.display = 'block';
+            console.log('Found iframe:', iframe.id, 'Forced display:', iframe.style.display);
+        });
+    </script>
+</body>
+</html>
