@@ -639,7 +639,7 @@
     // Save settings to dashboard-settings.json on the server
     async function saveSettingsToServer(settings) {
       await fetch('dashboard-settings.json', {
-        method: 'PUT',
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(settings)
       });
