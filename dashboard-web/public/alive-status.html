@@ -456,7 +456,7 @@ tbody tr:nth-child(even) {
   </div>
 <script>
   const BLUE_ZONE_COL_INDEX = 10;
-  const googleSheetJsonUrl = 'https://sheets.googleapWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
+  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
 
   function showErrorNote(error) {
     const note = document.getElementById('error-note');
@@ -766,7 +766,7 @@ function slideOutTable() {
   setTimeout(() => { container.style.display = 'none'; }, 500);
 }
 // Slide in/out based on Google Sheet cell L2 (Sheet7)
-const controlUrl = 'https://sheets.googleapis.com/v4/spreadsSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
+const controlUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
 let lastControl = null;
 function pollSheetControl() {
   fetch(controlUrl + '&t=' + Date.now())
