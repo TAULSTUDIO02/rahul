@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alive Status Dashboard</title>
+  <link rel="stylesheet" href="assets/styles.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', Arial, sans-serif;
+      background: #181828;
+      color: #fff;
+      display: flex;
+      min-height: 100vh;
+    }
+    #dashboard-sidebar {
+      width: 250px;
+      background: #232232;
+      border-radius: 14px;
+      margin: 32px 0 32px 32px;
+      padding: 24px 18px 18px 18px;
+      box-shadow: 0 4px 24px #0005;
+      font-size: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+      min-width: 220px;
+    }
+    #dashboard-sidebar h3 {
+      margin: 0 0 18px 0;
+      font-size: 1.18em;
+      color: #a78bfa;
+      font-weight: 700;
+      text-align: left;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sidebar-section {
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #353556;
+    }
+    .sidebar-section:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+    .sidebar-section label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0 0 0;
+      font-weight: 500;
+      font-size: 13px;
+      gap: 8px;
+    }
+    .sidebar-section input[type="color"],
+    .sidebar-section input[type="url"] {
+      margin-left: 0;
+      flex: 0 0 44px;
+      border: none;
+      border-radius: 4px;
+      height: 28px;
+      background: #181828;
+      outline: none;
+      transition: box-shadow 0.2s;
+    }
+    .sidebar-section input[type="url"] {
+      width: 100%;
+      min-width: 0;
+      padding: 4px 8px;
+      font-size: 13px;
+      background: #181828;
+      color: #fff;
+      border: 1px solid #353556;
+      border-radius: 4px;
+      margin-left: 0;
+      margin-top: 4px;
+    }
+    .sidebar-section input[type="url"]:focus {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 2px #a78bfa44;
+    }
+    .sidebar-section input[type="color"]:focus {
+      box-shadow: 0 0 0 2px #a78bfa44;
+    }
+    .sidebar-section strong {
+      color: #facc15;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      margin-bottom: 4px;
+      display: block;
+    }
+    .dashboard-btn {
+      margin-top: 18px;
+      padding: 9px 0;
+      background: linear-gradient(90deg, #a78bfa, #818cf8);
+      color: #232232;
+      border: none;
+      border-radius: 7px;
+      font-size: 1em;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      box-shadow: 0 2px 8px #0002;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+    }
+    .dashboard-btn:hover {
+      background: linear-gradient(90deg, #818cf8, #a78bfa);
+      color: #fff;
+    }
+    .dashboard-btn.reset {
+      background: linear-gradient(90deg, #f87171, #facc15);
+      color: #232232;
+      margin-top: 8px;
+    }
+    .dashboard-btn.reset:hover {
+      background: linear-gradient(90deg, #facc15, #f87171);
+      color: #fff;
+    }
+    .preview-panel {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 24px 0 24px 0;
+    }
+    .ranking-container {
+      background: #181828;
+      border-radius: 12px;
+      box-shadow: 0 2px 12px #0004;
+      padding: 18px 18px 18px 18px;
+      min-width: 320px;
+      max-width: 420px;
+      margin-left: 0;
+    }
+    /* Alternate row colors for all rows */
+    tbody tr:nth-child(odd) {
+      background: var(--row-bg-odd, #151515);
+    }
+    tbody tr:nth-child(even) {
+      background: var(--row-bg-even, #1304eb);
+    }
+    /* Column text color styles */
+    tbody tr td:nth-child(1) { color: var(--col-text-color-rank, #fff); }
+    tbody tr td:nth-child(2) { color: var(--col-text-color-team, #fff); }
+    tbody tr td:nth-child(3) { color: var(--col-text-color-fin, #f80909); }
+    tbody tr td:nth-child(4) { color: var(--col-text-color-status, #fff); }
+    /* Blue zone animated row */
+    .blue-zone-animated {
+      background: linear-gradient(
+        135deg,
+        #00f0ff,
+        #001eff,
+        #00f0ff
+      );
+      background-size: 250% 250%;
+      animation: neon-sweep 10s ease-in-out infinite;
+      color: #fff !important;
+      position: relative;
+      z-index: 1;
+    }
+    @keyframes neon-sweep {
+      0% { background-position: 0% 100%; }
+      50% { background-position: 100% 0%; }
+      100% { background-position: 0% 100%; }
+    }
+    /* Always keep every text in blue-zone-animated row white */
+    tbody tr.blue-zone-animated td,
+    tbody tr.blue-zone-animated .team-cell,
+    tbody tr.blue-zone-animated .rank-cell,
+    tbody tr.blue-zone-animated .pts-cell,
+    tbody tr.blue-zone-animated .status-cell,
+    tbody tr.blue-zone-animated span,
+    tbody tr.blue-zone-animated div,
+    tbody tr.blue-zone-animated * {
+      color: #fff !important;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.20);
+      background: transparent;
+      z-index: 2;
+      position: relative;
+    }
+    thead th {
+      background: linear-gradient(90deg, var(--alive-header-bg, #851616), var(--alive-header-bg-end, #ff4e50), var(--alive-header-bg, #851616), var(--alive-header-bg-end, #ff4e50));
+      color: #fff !important;
+      background-size: 300% 300%;
+      animation: header-gradient-move 6s ease-in-out infinite;
+      font-weight: 600;
+      font-family: 'Poppins', Arial, 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+      letter-spacing: 0px;
+      font-size: 12px;
+    }
+    @keyframes header-gradient-move {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .legend-row td {
+      background: #222 !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: #fff !important;
+      font-size: 10px;
+      font-weight: 600;
+      height: 13px;
+      padding-top: 1px;
+      padding-bottom: 1px;
+      padding-left: 1px;
+      padding-right: 0;
+      letter-spacing: 0px;
+      text-align: center !important;
+      font-family: 'Poppins', Arial, 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .legend-row td span[style*="width:16px"] {
+      width: 6px !important; /* Reduced from 16px */
+      display: inline-block !important;
+    }
+    .legend-box {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 1px;
+      margin-right: 3px;
+      margin-left: 0;
+      vertical-align: middle;
+    }
+    /* Use CSS variables for legend colors */
+    .legend-alive {
+      background: var(--legend-alive-color, #16a34a);
+    }
+    .legend-elim {
+      background: var(--legend-elim-color, #dc2626);
+    }
+    .legend-alone {
+      background: var(--legend-alone-color, #2600ff);
+    }
+    .legend-spacer {
+      display: inline-block;
+      width: 4px;
+      height: 1px;
+      margin: 0 1px;
+      padding: 0;
+      vertical-align: middle;
+    }
+    .status-bar {
+      width: 12px;
+      height: 12px;
+      background-size: cover;
+      background-repeat: no-repeat;
+      background-position: center;
+      display: inline-block;
+      border-radius: 2px;
+      margin-right: 2px;
+    }
+    .status-bar.alive {
+      background-image: url('https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png');
+    }
+    .status-bar.eliminated {
+      background-image: url('https://i.postimg.cc/cHQjn27C/Laptop-9.png');
+      opacity: 1;
+    }
+    .team-logo {
+      width: 20px;
+      height: 20px;
+      object-fit: contain;
+      border-radius: 3px;
+      vertical-align: middle;
+      background: transparent;
+      color: #fff;
+      display: inline-block;
+      margin-right: 1px;
+      flex-shrink: 0.5;
+      align-self: center;
+    }
+    .team-name {
+      font-weight: bold;
+      font-size: 0.85rem;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      min-width: 0;
+      flex: 1 1 0%;
+      text-align: left;
+      line-height: 1.152;
+      align-self: center;
+      font-family: 'Poppins', Arial, 'Roboto', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    .pts-cell {
+      font-weight: bold;
+      color: #f80909;
+      width: 34px;
+      text-align: center;
+      font-size: 0.91em;
+      padding-left: 0;
+      padding-right: 0;
+      letter-spacing: 1px;
+    }
+    .status-cell {
+      width: 30px;
+      text-align: center;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+    }
+    .status-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5px;
+      height: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div id="dashboard-sidebar">
+    <h3><span class="material-icons">tune</span> Dashboard</h3>
+    <div class="sidebar-section">
+      <strong>Row Colors</strong>
+      <label>
+        Odd Row
+        <input type="color" id="rowOddColor" value="#151515">
+      </label>
+      <label>
+        Even Row
+        <input type="color" id="rowEvenColor" value="#1304eb">
+      </label>
+    </div>
+    <div class="sidebar-section">
+      <strong>Column Text Colors</strong>
+      <label>
+        # Column
+        <input type="color" id="colTextColorRank" value="#fff">
+      </label>
+      <label>
+        Team Name
+        <input type="color" id="colTextColorTeam" value="#fff">
+      </label>
+      <label>
+        FIN.
+        <input type="color" id="colTextColorFin" value="#f80909">
+      </label>
+      <label>
+        Status
+        <input type="color" id="colTextColorStatus" value="#fff">
+      </label>
+    </div>
+    <div class="sidebar-section">
+      <strong>Status Icons</strong>
+      <label style="flex-direction:column;align-items:flex-start;">
+        Alive Icon URL
+        <input type="url" id="aliveIconUrl" value="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png">
+      </label>
+      <label style="flex-direction:column;align-items:flex-start;">
+        Eliminated Icon URL
+        <input type="url" id="eliminatedIconUrl" value="https://i.postimg.cc/cHQjn27C/Laptop-9.png">
+      </label>
+    </div>
+    <div class="sidebar-section">
+      <strong>Header Gradient</strong>
+      <label>
+        Start
+        <input type="color" id="headerGradientStart" value="#851616">
+      </label>
+      <label>
+        End
+        <input type="color" id="headerGradientEnd" value="#ff4e50">
+      </label>
+    </div>
+    <div class="sidebar-section">
+      <strong>Legend Colors</strong>
+      <label>
+        Alive
+        <input type="color" id="legendAliveColor" value="#16a34a">
+      </label>
+      <label>
+        Eliminated
+        <input type="color" id="legendElimColor" value="#dc2626">
+      </label>
+      <label>
+        Out of Zone
+        <input type="color" id="legendAloneColor" value="#2600ff">
+      </label>
+    </div>
+    <button id="saveDashboardBtn" class="dashboard-btn">
+      <span class="material-icons" style="vertical-align:middle;">save</span> Save
+    </button>
+    <button id="resetDashboardBtn" class="dashboard-btn reset">
+      <span class="material-icons" style="vertical-align:middle;">restart_alt</span> Reset
+    </button>
+  </div>
+  <div class="preview-panel">
+    <div class="ranking-container">
+      <table id="ranking-table">
+        <colgroup>
+          <col style="width: 24px;">
+          <col style="width: 60px;">
+          <col style="width: 34px;">
+          <col style="width: 60px;">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th class="team-heading">TEAM NAME</th>
+            <th>FIN.</th>
+            <th>STATUS</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr class="alive-row">
+            <td>1</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">ABC</span></td>
+            <td class="pts-cell">15</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="eliminated-row">
+            <td>2</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/cHQjn27C/Laptop-9.png" alt="Logo"><span class="team-name">XYZ</span></td>
+            <td class="pts-cell">12</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="blue-zone-animated">
+            <td>3</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">MANTRA</span></td>
+            <td class="pts-cell">1</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="alive-row">
+            <td>4</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">DELTA</span></td>
+            <td class="pts-cell">10</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="eliminated-row">
+            <td>5</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/cHQjn27C/Laptop-9.png" alt="Logo"><span class="team-name">OMEGA</span></td>
+            <td class="pts-cell">8</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="alive-row">
+            <td>6</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">ALPHA</span></td>
+            <td class="pts-cell">7</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="eliminated-row">
+            <td>7</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/cHQjn27C/Laptop-9.png" alt="Logo"><span class="team-name">BETA</span></td>
+            <td class="pts-cell">6</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="alive-row">
+            <td>8</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">SIGMA</span></td>
+            <td class="pts-cell">5</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="eliminated-row">
+            <td>9</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/cHQjn27C/Laptop-9.png" alt="Logo"><span class="team-name">THETA</span></td>
+            <td class="pts-cell">4</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="alive-row">
+            <td>10</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">EPSILON</span></td>
+            <td class="pts-cell">3</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="eliminated-row">
+            <td>11</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/cHQjn27C/Laptop-9.png" alt="Logo"><span class="team-name">ZETA</span></td>
+            <td class="pts-cell">2</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+              </div>
+            </td>
+          </tr>
+          <tr class="blue-zone-animated">
+            <td>12</td>
+            <td class="team-cell"><img class="team-logo" src="https://i.postimg.cc/fzXQfgvz/Free-Fire-Kelly.png" alt="Logo"><span class="team-name">OMEGA-X</span></td>
+            <td class="pts-cell">1</td>
+            <td class="status-cell">
+              <div class="status-container">
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+                <div class="status-bar alive"></div>
+                <div class="status-bar eliminated"></div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr class="legend-row">
+            <td colspan="4">
+              <span class="legend-box legend-alive"></span>ALIVE
+              <span class="legend-spacer"></span>
+              <span class="legend-box legend-elim"></span>ELIMINATED
+              <span class="legend-spacer"></span>
+              <span class="legend-box legend-alone"></span>OUT OF ZONE
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+  <script>
+    // Row color change feature for odd/even
+    function setRowColorsFromInputs() {
+      document.documentElement.style.setProperty('--row-bg-odd', document.getElementById('rowOddColor').value);
+      document.documentElement.style.setProperty('--row-bg-even', document.getElementById('rowEvenColor').value);
+    }
+    document.getElementById('rowOddColor').addEventListener('input', setRowColorsFromInputs);
+    document.getElementById('rowEvenColor').addEventListener('input', setRowColorsFromInputs);
+
+    // Header gradient controls
+    function setHeaderGradient() {
+      const start = document.getElementById('headerGradientStart').value;
+      const end = document.getElementById('headerGradientEnd').value;
+      document.documentElement.style.setProperty('--alive-header-bg', start);
+      document.documentElement.style.setProperty('--alive-header-bg-end', end);
+    }
+    document.getElementById('headerGradientStart').addEventListener('input', setHeaderGradient);
+    document.getElementById('headerGradientEnd').addEventListener('input', setHeaderGradient);
+
+    // Column text color feature
+    function setColTextColors() {
+      document.documentElement.style.setProperty('--col-text-color-rank', document.getElementById('colTextColorRank').value);
+      document.documentElement.style.setProperty('--col-text-color-team', document.getElementById('colTextColorTeam').value);
+      document.documentElement.style.setProperty('--col-text-color-fin', document.getElementById('colTextColorFin').value);
+      document.documentElement.style.setProperty('--col-text-color-status', document.getElementById('colTextColorStatus').value);
+    }
+    document.getElementById('colTextColorRank').addEventListener('input', setColTextColors);
+    document.getElementById('colTextColorTeam').addEventListener('input', setColTextColors);
+    document.getElementById('colTextColorFin').addEventListener('input', setColTextColors);
+    document.getElementById('colTextColorStatus').addEventListener('input', setColTextColors);
+
+    // Icon URL feature
+    function setIconUrls() {
+      const aliveUrl = document.getElementById('aliveIconUrl').value;
+      const eliminatedUrl = document.getElementById('eliminatedIconUrl').value;
+      document.querySelectorAll('.status-bar.alive').forEach(el => el.style.backgroundImage = `url('${aliveUrl}')`);
+      document.querySelectorAll('.status-bar.eliminated').forEach(el => el.style.backgroundImage = `url('${eliminatedUrl}')`);
+    }
+    document.getElementById('aliveIconUrl').addEventListener('input', setIconUrls);
+    document.getElementById('eliminatedIconUrl').addEventListener('input', setIconUrls);
+
+    // Set legend colors from inputs
+    function setLegendColors() {
+      document.documentElement.style.setProperty('--legend-alive-color', document.getElementById('legendAliveColor').value);
+      document.documentElement.style.setProperty('--legend-elim-color', document.getElementById('legendElimColor').value);
+      document.documentElement.style.setProperty('--legend-alone-color', document.getElementById('legendAloneColor').value);
+    }
+    document.getElementById('legendAliveColor').addEventListener('input', setLegendColors);
+    document.getElementById('legendElimColor').addEventListener('input', setLegendColors);
+    document.getElementById('legendAloneColor').addEventListener('input', setLegendColors);
+
+    // Save settings to dashboard-settings.json on the server
+    async function saveSettingsToServer(settings) {
+      await fetch('dashboard-settings.json', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+      });
+    }
+
+    document.getElementById('saveDashboardBtn').addEventListener('click', async function() {
+      const settings = {
+        rowOddColor: document.getElementById('rowOddColor').value,
+        rowEvenColor: document.getElementById('rowEvenColor').value,
+        colTextColorRank: document.getElementById('colTextColorRank').value,
+        colTextColorTeam: document.getElementById('colTextColorTeam').value,
+        colTextColorFin: document.getElementById('colTextColorFin').value,
+        colTextColorStatus: document.getElementById('colTextColorStatus').value,
+        aliveIconUrl: document.getElementById('aliveIconUrl').value,
+        eliminatedIconUrl: document.getElementById('eliminatedIconUrl').value,
+        headerGradientStart: document.getElementById('headerGradientStart').value,
+        headerGradientEnd: document.getElementById('headerGradientEnd').value,
+        legendAliveColor: document.getElementById('legendAliveColor').value,
+        legendElimColor: document.getElementById('legendElimColor').value,
+        legendAloneColor: document.getElementById('legendAloneColor').value,
+      };
+      await saveSettingsToServer(settings);
+      alert('Dashboard settings saved! Open or reload the Alive Status page to see changes.');
+    });
+
+    // Fetch settings from dashboard-settings.json on load
+    async function fetchSettingsFromServer() {
+      const res = await fetch('dashboard-settings.json');
+      if (!res.ok) return {};
+      return await res.json();
+    }
+
+    window.addEventListener('DOMContentLoaded', async function() {
+      setRowColorsFromInputs();
+      setColTextColors();
+      setIconUrls();
+      setHeaderGradient();
+      setLegendColors();
+      const settings = await fetchSettingsFromServer();
+      if (settings.rowOddColor) {
+        document.getElementById('rowOddColor').value = settings.rowOddColor;
+        document.documentElement.style.setProperty('--row-bg-odd', settings.rowOddColor);
+      }
+      if (settings.rowEvenColor) {
+        document.getElementById('rowEvenColor').value = settings.rowEvenColor;
+        document.documentElement.style.setProperty('--row-bg-even', settings.rowEvenColor);
+      }
+      if (settings.colTextColorRank) {
+        document.getElementById('colTextColorRank').value = settings.colTextColorRank;
+        document.documentElement.style.setProperty('--col-text-color-rank', settings.colTextColorRank);
+      }
+      if (settings.colTextColorTeam) {
+        document.getElementById('colTextColorTeam').value = settings.colTextColorTeam;
+        document.documentElement.style.setProperty('--col-text-color-team', settings.colTextColorTeam);
+      }
+      if (settings.colTextColorFin) {
+        document.getElementById('colTextColorFin').value = settings.colTextColorFin;
+        document.documentElement.style.setProperty('--col-text-color-fin', settings.colTextColorFin);
+      }
+      if (settings.colTextColorStatus) {
+        document.getElementById('colTextColorStatus').value = settings.colTextColorStatus;
+        document.documentElement.style.setProperty('--col-text-color-status', settings.colTextColorStatus);
+      }
+      if (settings.aliveIconUrl) {
+        document.getElementById('aliveIconUrl').value = settings.aliveIconUrl;
+        document.querySelectorAll('.status-bar.alive').forEach(el => el.style.backgroundImage = `url('${settings.aliveIconUrl}')`);
+      }
+      if (settings.eliminatedIconUrl) {
+        document.getElementById('eliminatedIconUrl').value = settings.eliminatedIconUrl;
+        document.querySelectorAll('.status-bar.eliminated').forEach(el => el.style.backgroundImage = `url('${settings.eliminatedIconUrl}')`);
+      }
+      if (settings.headerGradientStart) {
+        document.getElementById('headerGradientStart').value = settings.headerGradientStart;
+        document.documentElement.style.setProperty('--alive-header-bg', settings.headerGradientStart);
+      }
+      if (settings.headerGradientEnd) {
+        document.getElementById('headerGradientEnd').value = settings.headerGradientEnd;
+        document.documentElement.style.setProperty('--alive-header-bg-end', settings.headerGradientEnd);
+      }
+      if (settings.legendAliveColor) {
+        document.getElementById('legendAliveColor').value = settings.legendAliveColor;
+        document.documentElement.style.setProperty('--legend-alive-color', settings.legendAliveColor);
+      }
+      if (settings.legendElimColor) {
+        document.getElementById('legendElimColor').value = settings.legendElimColor;
+        document.documentElement.style.setProperty('--legend-elim-color', settings.legendElimColor);
+      }
+      if (settings.legendAloneColor) {
+        document.getElementById('legendAloneColor').value = settings.legendAloneColor;
+        document.documentElement.style.setProperty('--legend-alone-color', settings.legendAloneColor);
+      }
+    });
+  </script>
+</body>
+</html>
