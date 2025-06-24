@@ -456,8 +456,7 @@ tbody tr:nth-child(even) {
   </div>
 <script>
   const BLUE_ZONE_COL_INDEX = 10;
-  // Fetches data from backend server.js (/sheet endpoint), which caches Google Sheets API data
-  const googleSheetJsonUrl = '/sheet'; // or your backend server URL
+  const googleSheetJsonUrl = 'https://sheets.googleapis.com/v4/spreadsheets/1dZk7-7isdatJaaJTB2URx8IBl4KivN58Q-JppJaz8ak/values/Sheet7?alt=json&key=AIzaSyBWCxdpnH0OtdtznfKDR4_6RWT8SyUDDus';
 
   function showErrorNote(error) {
     const note = document.getElementById('error-note');
