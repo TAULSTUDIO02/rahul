@@ -1,25 +1,30 @@
 const express = require('express');
 const fs = require('fs');
+const path = require('path');
 const cors = require('cors');
 const app = express();
-const SETTINGS_FILE = './scoreboard-settings.json';
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Get settings
-app.get('/settings', (req, res) => {
-    if (fs.existsSync(SETTINGS_FILE)) {
-        res.json(JSON.parse(fs.readFileSync(SETTINGS_FILE)));
-    } else {
-        res.json({});
-    }
+const SETTINGS_PATH = path.join(__dirname, 'public', 'dashboard-settings.json');
+
+// Serve settings
+app.get('/dashboard-settings.json', (req, res) => {
+  fs.readFile(SETTINGS_PATH, 'utf8', (err, data) => {
+    if (err) return res.status(404).json({});
+    res.type('json').send(data);
+  });
 });
 
 // Save settings
-app.post('/settings', (req, res) => {
-    fs.writeFileSync(SETTINGS_FILE, JSON.stringify(req.body, null, 2));
-    res.json({ status: 'ok' });
+app.post('/dashboard-settings.json', (req, res) => {
+  fs.writeFile(SETTINGS_PATH, JSON.stringify(req.body, null, 2), err => {
+    if (err) return res.status(500).json({ error: 'Failed to save' });
+    res.json({ success: true });
+  });
 });
 
-app.listen(3001, () => console.log('Settings server running on port 3001'));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log('Server running on port', PORT));
